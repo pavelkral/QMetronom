@@ -28,4 +28,3 @@ RC_FILE = qmetronom.rc
 
 
 
-ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
