@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+     <file>samples/loop.wav</file>
+	<file>samples/clap.wav</file>
+	<file>samples/kick.wav</file>
+    </qresource>
+</RCC>
