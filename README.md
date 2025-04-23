@@ -1,8 +1,7 @@
-#Smetronom
+#Qmetronom
 
 Metronom application with options play background samples.
 
-![alt tag](http://quadriproduction.org/media/img/app/smetronom.jpg)
 
 To compile run:
 
@@ -10,7 +9,7 @@ $qmake
 
 $make (by platform)
 
-
+![Image](https://github.com/pavelkral/Qmetronom/raw/main/media/qmetronom.png)
 
 
 
