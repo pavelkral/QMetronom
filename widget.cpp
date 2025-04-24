@@ -21,10 +21,10 @@ Widget::Widget(QWidget *parent)
     setWindowTitle("Smetronom");
     paused = true;
 
-    music = new QMediaPlayer(this);
-    musicAudioOutput = new QAudioOutput(this);
-    music->setAudioOutput(musicAudioOutput);
-    music->setSource(QUrl("qrc:/samples/clap.wav"));
+    mainPlayer = new QMediaPlayer(this);
+    mainAudioOutput = new QAudioOutput(this);
+    mainPlayer->setAudioOutput(mainAudioOutput);
+    mainPlayer->setSource(QUrl("qrc:/samples/clap.wav"));
 
     ticks = 0;
     mStartTime = QDateTime::currentDateTime();
@@ -36,12 +36,12 @@ Widget::Widget(QWidget *parent)
     ui->maincounter->setStyleSheet("QLabel { background-color : green;margin-right:5px; color : black; border-radius:10px ;}");
     ui->timeLcd->setPalette(Qt::black);
 
-    music2 = new QMediaPlayer(this);
-    music2AudioOutput = new QAudioOutput(this);
-    music2->setAudioOutput(music2AudioOutput);
-    music2->setSource(QUrl("qrc:/samples/loop.wav"));
+    backgroundPlayer = new QMediaPlayer(this);
+    backgroudAudioOutput = new QAudioOutput(this);
+    backgroundPlayer->setAudioOutput(backgroudAudioOutput);
+    backgroundPlayer->setSource(QUrl("qrc:/samples/loop.wav"));
 
-    connect(music2, &QMediaPlayer::playbackStateChanged,
+    connect(backgroundPlayer, &QMediaPlayer::playbackStateChanged,
             this, &Widget::handleBackgroundLoop);
 
     bpc = 3;
@@ -98,7 +98,7 @@ void Widget::timerEvent(QTimerEvent *event)
                 ui->maincounter->setStyleSheet("QLabel { background-color : red;margin-right:5px; color : white;border-radius:10px; }");
                 ui->maincounter->setText("1");
 
-                music->setSource(QUrl("qrc:/samples/kick.wav"));
+                mainPlayer->setSource(QUrl("qrc:/samples/kick.wav"));
 
                 bpcplayed = 0;
                 ticks = 0;
@@ -109,13 +109,13 @@ void Widget::timerEvent(QTimerEvent *event)
                 ui->maincounter->setStyleSheet("QLabel { background-color : green; margin-right:5px;color : black;border-radius:10px ; }");
                 ui->maincounter->setText(QString("%1").arg(bpcplayed + 1));
 
-                music->setSource(QUrl("qrc:/samples/clap.wav"));
+                mainPlayer->setSource(QUrl("qrc:/samples/clap.wav"));
             }
 
             if(ticksmute == false)
             {
-                music->setPosition(0);
-                music->play();
+                mainPlayer->setPosition(0);
+                mainPlayer->play();
             }
 
             qint64 ms = mStartTime.msecsTo(QDateTime::currentDateTime());
@@ -182,8 +182,8 @@ void Widget::on_pushButton_clicked()
         }
         timerId = startTimer(timerspeed);
 
-        if (music2->playbackState() != QMediaPlayer::PlayingState) {
-            music2->play();
+        if (backgroundPlayer->playbackState() != QMediaPlayer::PlayingState) {
+            backgroundPlayer->play();
         }
 
     }
@@ -200,7 +200,7 @@ void Widget::on_pushButton_2_clicked()
         }
         paused = true;
 
-        music2->stop();
+        backgroundPlayer->stop();
 
         ui->maincounter->setText("0");
         ui->spinBox->setValue(0);
@@ -328,14 +328,14 @@ void Widget::changeRate()
 void Widget::on_btbgplay_clicked()
 {
     qDebug() << "Background music stop clicked";
-    music2->stop();
+    backgroundPlayer->stop();
 }
 
 void Widget::on_pushButton_4_clicked()
 {
     qDebug() << "Background music play clicked";
-    if (music2->playbackState() != QMediaPlayer::PlayingState) {
-        music2->play();
+    if (backgroundPlayer->playbackState() != QMediaPlayer::PlayingState) {
+        backgroundPlayer->play();
     }
 
 }
@@ -343,6 +343,7 @@ void Widget::on_pushButton_4_clicked()
 void Widget::on_btopen_clicked()
 {
     qDebug() << "Open file clicked";
+
     Dialog filedialog;
 
     if ( filedialog.exec() == QDialog::Accepted )
@@ -353,8 +354,8 @@ void Widget::on_btopen_clicked()
         QUrl fileUrl = QUrl::fromLocalFile(path1);
 
         if (fileUrl.isValid()) {
-            music2->stop();
-            music2->setSource(fileUrl);
+            backgroundPlayer->stop();
+            backgroundPlayer->setSource(fileUrl);
         } else {
             qDebug() << "Invalid file URL:" << path1;
             QMessageBox::warning(this, "Chyba", "Neplatná cesta k souboru.");
@@ -371,8 +372,8 @@ void Widget::openFileNameReady(QString fileName)
         qDebug() << "FileName (from async dialog): " << fileName;
         QUrl fileUrl = QUrl::fromLocalFile(fileName);
         if (fileUrl.isValid()) {
-            music2->stop();
-            music2->setSource(fileUrl);
+            backgroundPlayer->stop();
+            backgroundPlayer->setSource(fileUrl);
         } else {
             qDebug() << "Invalid file URL from async dialog:" << fileName;
             QMessageBox::warning(this, "Chyba", "Neplatná cesta k souboru z asynchronního dialogu.");
@@ -392,16 +393,16 @@ void Widget::on_btmute_clicked()
 
 void Widget::on_dial_valueChanged(int value)
 {
-    if (musicAudioOutput) {
-        musicAudioOutput->setVolume(static_cast<qreal>(value) / 100.0);
+    if (mainAudioOutput) {
+        mainAudioOutput->setVolume(static_cast<qreal>(value) / 100.0);
         qDebug() << "Metronome volume set to:" << value;
     }
 }
 
 void Widget::on_dial_2_valueChanged(int value)
 {
-    if (music2AudioOutput) {
-        music2AudioOutput->setVolume(static_cast<qreal>(value) / 100.0);
+    if (backgroudAudioOutput) {
+        backgroudAudioOutput->setVolume(static_cast<qreal>(value) / 100.0);
         qDebug() << "Background volume set to:" << value;
     }
 }
@@ -409,10 +410,10 @@ void Widget::on_dial_2_valueChanged(int value)
 void Widget::on_bt_seek_right_clicked()
 {
     qDebug() << "Seek right clicked";
-    if (music2->isSeekable()) {
-        quint64 currentPos = music2->position();
-        music2->setPosition(currentPos + 1000);
-        qDebug() << "Seeked to:" << music2->position();
+    if (backgroundPlayer->isSeekable()) {
+        quint64 currentPos = backgroundPlayer->position();
+        backgroundPlayer->setPosition(currentPos + 1000);
+        qDebug() << "Seeked to:" << backgroundPlayer->position();
     } else {
         qDebug() << "Background player is not seekable.";
     }
@@ -422,9 +423,9 @@ void Widget::handleBackgroundLoop(QMediaPlayer::PlaybackState state)
 {
     qDebug() << "Background player state changed:" << state;
     if (state == QMediaPlayer::StoppedState) {
-        if (music2->mediaStatus() == QMediaPlayer::EndOfMedia) {
+        if (backgroundPlayer->mediaStatus() == QMediaPlayer::EndOfMedia) {
             qDebug() << "Background music reached end, restarting loop";
-            music2->play();
+            backgroundPlayer->play();
         } else {
             qDebug() << "Background music stopped for other reason, not looping.";
         }

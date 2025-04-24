@@ -1,12 +1,8 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-// Widget.h (ujistěte se, že obsahuje toto)
-
 #include <QWidget>
 #include <QMediaPlayer>
-
-
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QAudioOutput>
@@ -19,7 +15,6 @@
 #include <QCoreApplication>
 #include <QMessageBox>
 #include "ui_widget.h"
-#include "dialog.h"
 
 namespace Ui {
 class Widget;
@@ -57,10 +52,10 @@ private slots:
 private:
     Ui::Widget *ui;
     bool paused;
-    QMediaPlayer *music;
-    QAudioOutput *musicAudioOutput;
-    QMediaPlayer *music2;
-    QAudioOutput *music2AudioOutput;
+    QMediaPlayer *mainPlayer;
+    QAudioOutput *mainAudioOutput;
+    QMediaPlayer *backgroundPlayer;
+    QAudioOutput *backgroudAudioOutput;
 
     int ticks;
     QDateTime mStartTime;
