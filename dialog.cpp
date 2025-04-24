@@ -8,7 +8,7 @@ Dialog::Dialog(QWidget *parent) :
     ui->setupUi(this);
 
 	int nWidth = 720;
-	int nHeight = 1280;
+    int nHeight = 720;
 
 	if (parent != NULL)
 		setGeometry(parent->x() + parent->width()/2 - nWidth/2,

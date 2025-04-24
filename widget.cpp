@@ -34,7 +34,7 @@ Widget::Widget(QWidget *parent)
     qDebug() << "App running:";
 
     ui->maincounter->setStyleSheet("QLabel { background-color : green;margin-right:5px; color : black; border-radius:10px ;}");
-    ui->lcdNumber_2->setPalette(Qt::black);
+    ui->timeLcd->setPalette(Qt::black);
 
     music2 = new QMediaPlayer(this);
     music2AudioOutput = new QAudioOutput(this);
@@ -125,7 +125,7 @@ void Widget::timerEvent(QTimerEvent *event)
             ms = ms % 1000;
 
             QString diff = QString("%1:%2:%3").arg(h, 2, 10, QChar('0')).arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0'));
-            ui->lcdNumber_2->display(diff);
+            ui->timeLcd->display(diff);
 
             bpcplayed++;
             ticks++;
@@ -175,7 +175,7 @@ void Widget::on_pushButton_clicked()
 
         ui->maincounter->setText("0");
         ui->spinBox->setValue(0);
-        ui->lcdNumber_2->display("00:00:00");
+        ui->timeLcd->display("00:00:00");
 
         if (timerId != 0) {
             killTimer(timerId);
@@ -204,7 +204,7 @@ void Widget::on_pushButton_2_clicked()
 
         ui->maincounter->setText("0");
         ui->spinBox->setValue(0);
-        ui->lcdNumber_2->display("00:00:00");
+        ui->timeLcd->display("00:00:00");
         ui->maincounter->setStyleSheet("QLabel { background-color : green; margin-right:5px;color : black;border-radius:10px ; }");
 
         ticks = 0;
@@ -246,7 +246,7 @@ void Widget::on_spinBox_2_valueChanged(int arg1)
 
     ui->maincounter->setText("0");
     ui->spinBox->setValue(0);
-    ui->lcdNumber_2->display("00:00:00");
+    ui->timeLcd->display("00:00:00");
     ui->maincounter->setStyleSheet("QLabel { background-color : green; margin-right:5px;color : black;border-radius:10px ; }");
 
 
@@ -276,7 +276,7 @@ void Widget::resetsettings()
 
     ui->maincounter->setText("0");
     ui->spinBox->setValue(0);
-    ui->lcdNumber_2->display("00:00:00");
+    ui->timeLcd->display("00:00:00");
     ui->spinBox_2->setValue(120);
     ui->spinBox_3->setValue(bpc);
 
@@ -305,7 +305,7 @@ void Widget::on_spinBox_3_valueChanged(int arg1)
 
     ui->maincounter->setText("0");
     ui->spinBox->setValue(0);
-    ui->lcdNumber_2->display("00:00:00");
+    ui->timeLcd->display("00:00:00");
     ui->maincounter->setStyleSheet("QLabel { background-color : green; margin-right:5px;color : black;border-radius:10px ; }");
 
     mStartTime = QDateTime::currentDateTime();
